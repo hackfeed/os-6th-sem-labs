@@ -7,10 +7,12 @@
 #include "utils.h"
 
 #define STACK_ERROR 2
+#define ALLOCATION_ERROR 3
 
 typedef struct entry
 {
     char *dir;
+    char *path;
     size_t level;
 } entry_t;
 

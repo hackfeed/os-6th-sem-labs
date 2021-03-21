@@ -1,41 +1,35 @@
 #include "tree.h"
 
-int process_entry(dirstack_t *const stack,
-                  const size_t level,
-                  const char *const cur_path,
-                  const char *const cur_entry)
+void process_entry(dirstack_t *const stack, const size_t level, char *cur_entry)
 {
     struct stat statbuf;
-    char *path = join(cur_path, cur_entry);
 
-    if (lstat(path, &statbuf) < 0)
+    if (lstat(cur_entry, &statbuf) < 0)
     {
-        return LSTAT_ERROR;
+        return;
     }
 
     if (S_ISDIR(statbuf.st_mode) != 0)
     {
-        entry_t element = {path, level};
+        entry_t element = {cur_entry, realpath(cur_entry, NULL), level};
         push(stack, element);
 
-        return OK;
+        return;
     }
 
-    free(path);
     log_entry(cur_entry, level);
-
-    return OK;
 }
 
-void process_dir(dirstack_t *const stack, const entry_t cur_el, DIR *dp, struct dirent *dirp)
+void process_dir(dirstack_t *const stack, const entry_t cur_entry, DIR *dp, struct dirent *dirp)
 {
-    if ((dp = opendir(cur_el.dir)) != NULL)
+    if ((dp = opendir(cur_entry.path)) != NULL)
     {
+        chdir(cur_entry.path);
         while ((dirp = readdir(dp)) != NULL)
         {
             if (strcmp(dirp->d_name, ".") != 0 && strcmp(dirp->d_name, "..") != 0)
             {
-                process_entry(stack, cur_el.level + 1, cur_el.dir, dirp->d_name);
+                process_entry(stack, cur_entry.level + 1, dirp->d_name);
             }
         }
     }
@@ -46,32 +40,21 @@ void dirtree(char *path)
     struct dirent *dirp = NULL;
     DIR *dp = NULL;
     size_t level = 0;
-    char *fullpath = get_memstr(path, PATH_MAX + 1);
-    entry_t cur_el = {fullpath, level};
+    entry_t cur_entry = {path, realpath(path, NULL), level};
     dirstack_t stack = init();
 
-    push(&stack, cur_el);
+    push(&stack, cur_entry);
 
     while (stack.size)
     {
-        cur_el = pop(&stack);
-        char *entry;
+        cur_entry = pop(&stack);
 
-        if ((entry = strrchr(cur_el.dir, '/')))
-        {
-            log_entry(entry + 1, cur_el.level);
-        }
-        else
-        {
-            log_entry(cur_el.dir, cur_el.level);
-        }
-
-        process_dir(&stack, cur_el, dp, dirp);
-        free(cur_el.dir);
+        log_entry(cur_entry.dir, cur_entry.level);
+        process_dir(&stack, cur_entry, dp, dirp);
 
         if (dp != NULL && closedir(dp) < 0)
         {
-            fprintf(stderr, "Can't close directory %s\n", fullpath);
+            fprintf(stderr, "Can't close directory %s\n", cur_entry.dir);
         }
     }
 

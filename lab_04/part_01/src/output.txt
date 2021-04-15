@@ -1,0 +1,165 @@
+
+CMDLINE:
+./main
+
+ENVIRON:
+LOGIN=hackfeed
+PASS=pass
+SHELL=/bin/bash
+SESSION_MANAGER=local/hackfeed:@/tmp/.ICE-unix/1468,unix/hackfeed:/tmp/.ICE-unix/1468
+QT_ACCESSIBILITY=1
+COLORTERM=truecolor
+XDG_CONFIG_DIRS=/etc/xdg/xdg-ubuntu:/etc/xdg
+XDG_MENU_PREFIX=gnome-
+GNOME_DESKTOP_SESSION_ID=this-is-deprecated
+LC_ADDRESS=ru_RU.UTF-8
+GNOME_SHELL_SESSION_MODE=ubuntu
+LC_NAME=ru_RU.UTF-8
+SSH_AUTH_SOCK=/run/user/1000/keyring/ssh
+XMODIFIERS=@im=ibus
+DESKTOP_SESSION=ubuntu
+LC_MONETARY=ru_RU.UTF-8
+SSH_AGENT_PID=1433
+GTK_MODULES=gail:atk-bridge
+PWD=/home/hackfeed/oslabs/lab_04/part_01/src
+LOGNAME=hackfeed
+XDG_SESSION_DESKTOP=ubuntu
+XDG_SESSION_TYPE=x11
+GPG_AGENT_INFO=/run/user/1000/gnupg/S.gpg-agent:0:1
+XAUTHORITY=/run/user/1000/gdm/Xauthority
+WINDOWPATH=2
+HOME=/home/hackfeed
+USERNAME=hackfeed
+IM_CONFIG_PHASE=1
+LC_PAPER=ru_RU.UTF-8
+LANG=en_US.UTF-8
+LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+XDG_CURRENT_DESKTOP=ubuntu:GNOME
+VTE_VERSION=6200
+G_ENABLE_DIAGNOSTIC=0
+GNOME_TERMINAL_SCREEN=/org/gnome/Terminal/screen/16eebae1_0b54_4c0d_a907_f297f51bfacf
+INVOCATION_ID=e0efd90a3d284a5f93816daaafc6c58c
+MANAGERPID=1226
+LESSCLOSE=/usr/bin/lesspipe %s %s
+XDG_SESSION_CLASS=user
+TERM=xterm-256color
+LC_IDENTIFICATION=ru_RU.UTF-8
+LESSOPEN=| /usr/bin/lesspipe %s
+USER=hackfeed
+GNOME_TERMINAL_SERVICE=:1.63
+DISPLAY=:0
+SHLVL=1
+LC_TELEPHONE=ru_RU.UTF-8
+QT_IM_MODULE=ibus
+LC_MEASUREMENT=ru_RU.UTF-8
+XDG_RUNTIME_DIR=/run/user/1000
+LC_TIME=ru_RU.UTF-8
+JOURNAL_STREAM=8:36550
+XDG_DATA_DIRS=/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+GDMSESSION=ubuntu
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+LC_NUMERIC=ru_RU.UTF-8
+_=./main
+
+FD:
+0 -> /dev/pts/2/environ
+1 -> /dev/pts/2/environ
+2 -> /dev/pts/2/environ
+
+STAT: 
+pid  '1849'
+comm '(main)'
+state  'S'
+ppid  '1839'
+pgrp  '1848'
+session  '1839'
+tty_nr  '34818'
+tpgid  '1848'
+flags  '1077936192'
+minflt  '165'
+cminflt  '0'
+majflt  '182'
+cmajflt  '0'
+utime  '0'
+stime  '0'
+cutime  '0'
+cstime  '0'
+priority  '20'
+nice  '0'
+num_threads  '4'
+itrealvalue  '0'
+starttime  '7850'
+vsize  '719912960'
+rss  '267'
+rsslim  '18446744073709551615'
+startcode  '4194304'
+endcode  '4871146'
+startstack  '140731135254176'
+kstkesp  '0'
+kstkeip  '0'
+signal  '0'
+blocked  '0'
+sigignore  '0'
+sigcatch  '2143420159'
+wchan  '0'
+nswap  '0'
+cnswap  '0'
+exit_signal  '-1'
+processor  '0'
+rt_priority  '0'
+policy  '0'
+delayacct_blkio_ticks  '0'
+guest_time  '0'
+cguest_time  '0'
+start_data  '5554176'
+end_data  '5654688'
+start_brk  '30978048'
+arg_start  '140731135255406'
+arg_end  '140731135255413'
+env_start  '140731135255413'
+env_end  '140731135258609'
+exit_code  '0
+'
+
+STATM: 
+size  '175760'
+resident '267'
+shared  '161'
+text  '166'
+lib  '0'
+data  '25666'
+dt  '0
+34818'
+
+CWD:
+/home/hackfeed/oslabs/lab_04/part_01/src
+
+EXE:
+/home/hackfeed/oslabs/lab_04/part_01/src/main
+
+MAPS:
+00400000-004a6000 r-xp 00000000 00:32 25                                 /home/hackfeed/oslabs/lab_04/part_01/src/main
+004a6000-0054c000 r--p 000a6000 00:32 25                                 /home/hackfeed/oslabs/lab_04/part_01/src/main
+0054c000-00565000 rw-p 0014c000 00:32 25                                 /home/hackfeed/oslabs/lab_04/part_01/src/main
+00565000-00598000 rw-p 00000000 00:00 0 
+c000000000-c004000000 rw-p 00000000 00:00 0 
+7f8aa3d62000-7f8aa60d3000 rw-p 00000000 00:00 0 
+7f8aa60d3000-7f8ab6253000 ---p 00000000 00:00 0 
+7f8ab6253000-7f8ab6254000 rw-p 00000000 00:00 0 
+7f8ab6254000-7f8ac8103000 ---p 00000000 00:00 0 
+7f8ac8103000-7f8ac8104000 rw-p 00000000 00:00 0 
+7f8ac8104000-7f8aca4d9000 ---p 00000000 00:00 0 
+7f8aca4d9000-7f8aca4da000 rw-p 00000000 00:00 0 
+7f8aca4da000-7f8aca953000 ---p 00000000 00:00 0 
+7f8aca953000-7f8aca954000 rw-p 00000000 00:00 0 
+7f8aca954000-7f8aca9d3000 ---p 00000000 00:00 0 
+7f8aca9d3000-7f8acaa33000 rw-p 00000000 00:00 0 
+7ffe85516000-7ffe85537000 rw-p 00000000 00:00 0                          [stack]
+7ffe855c7000-7ffe855cb000 r--p 00000000 00:00 0                          [vvar]
+7ffe855cb000-7ffe855cd000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 --xp 00000000 00:00 0                  [vsyscall]
+
+
+ROOT:
+/

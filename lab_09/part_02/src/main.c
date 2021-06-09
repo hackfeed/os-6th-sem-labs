@@ -16,6 +16,8 @@
 #define KBD_SCANCODE_MASK 0x7f
 #define KBD_STATUS_MASK 0x80
 
+#define WQ_NAME_LEN 24
+
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Kononenko Sergey");
 
@@ -26,6 +28,51 @@ static char *ascii_map[] = {
     ",", ".", "/", "[RShift]", "[PrtSc]", "[Alt]", " ", "[Caps]", "F1", "F2", "F3", "F4", "F5",
     "F6", "F7", "F8", "F9", "F10", "[Num]", "[Scroll]", "[Home(7)]", "[Up(8)]", "[PgUp(9)]", "-",
     "[Left(4)]", "[Center(5)]", "[Right(6)]", "+", "[End(1)]", "[Down(2)]", "[PgDn(3)]", "[Ins]", "[Del]"};
+
+struct workqueue_struct
+{
+    struct list_head pwqs; /* WR: all pwqs of this wq */
+    struct list_head list; /* PR: list of all workqueues */
+
+    struct mutex mutex;                /* protects this wq */
+    int work_color;                    /* WQ: current work color */
+    int flush_color;                   /* WQ: current flush color */
+    atomic_t nr_pwqs_to_flush;         /* flush in progress */
+    struct wq_flusher *first_flusher;  /* WQ: first flusher */
+    struct list_head flusher_queue;    /* WQ: flush waiters */
+    struct list_head flusher_overflow; /* WQ: flush overflow list */
+
+    struct list_head maydays; /* MD: pwqs requesting rescue */
+    struct worker *rescuer;   /* MD: rescue worker */
+
+    int nr_drainers;      /* WQ: drain in progress */
+    int saved_max_active; /* WQ: saved pwq max_active */
+
+    struct workqueue_attrs *unbound_attrs; /* PW: only for unbound wqs */
+    struct pool_workqueue *dfl_pwq;        /* PW: only for unbound wqs */
+
+#ifdef CONFIG_SYSFS
+    struct wq_device *wq_dev; /* I: for sysfs interface */
+#endif
+#ifdef CONFIG_LOCKDEP
+    char *lock_name;
+    struct lock_class_key key;
+    struct lockdep_map lockdep_map;
+#endif
+    char name[WQ_NAME_LEN]; /* I: workqueue name */
+
+    /*
+	 * Destruction of workqueue_struct is RCU protected to allow walking
+	 * the workqueues list without grabbing wq_pool_mutex.
+	 * This is used to dump all workqueues from sysrq.
+	 */
+    struct rcu_head rcu;
+
+    /* hot fields used during command issue, aligned to cacheline */
+    unsigned int flags ____cacheline_aligned;    /* WQ: WQ_* flags */
+    struct pool_workqueue __percpu *cpu_pwqs;    /* I: per-cpu pwqs */
+    struct pool_workqueue __rcu *numa_pwq_tbl[]; /* PWR: unbound pwqs indexed by node */
+};
 
 static struct workqueue_struct *queue;
 static struct work_struct *work1, *work2;
@@ -81,12 +128,13 @@ static void work1_handler(struct work_struct *work)
 
 static void work2_handler(struct work_struct *work)
 {
-    // int len;
+    int len;
     printk("Work2 data: %ld, current cpu: %u\n", atomic_long_read(&work->data), smp_processor_id());
-    // len = snprintf(tmp + cur_pos, MAX_BUF_SIZE - cur_pos - 1, "!WQ! nr_drainers: %d, saved_max_active: %d\n",
-    //                queue->nr_drainers, queue->saved_max_active);
-    // cur_pos += len;
-    // tmp[cur_pos] = '\0';
+    len = snprintf(tmp + cur_pos, MAX_BUF_SIZE - cur_pos - 1,
+                   "!WQ %s! nr_drainers: %d, saved_max_active: %d\n",
+                   queue->name, queue->nr_drainers, queue->saved_max_active);
+    cur_pos += len;
+    tmp[cur_pos] = '\0';
 }
 
 static irqreturn_t irq_handler(int irq, void *dev)

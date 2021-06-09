@@ -6,6 +6,7 @@
 #include <linux/seq_file.h>
 #include <linux/workqueue.h>
 #include <linux/slab.h>
+#include <linux/smp.h>
 #include <asm/io.h>
 
 #define FILENAME "queue_file"
@@ -18,24 +19,13 @@
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Kononenko Sergey");
 
-// static char *ascii_map[] = {
-//     "[ESC]", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "bs", "[Tab]", "Q",
-//     "W", "E", "R", "T", "Y", "U", "I", "O", "P", "[", "]", "[Enter]", "[CTRL]", "A", "S", "D",
-//     "F", "G", "H", "J", "K", "L", ";", "\'", "`", "[LShift]", "\\", "Z", "X", "C", "V", "B", "N", "M",
-//     ",", ".", "/", "[RShift]", "[PrtSc]", "[Alt]", " ", "[Caps]", "F1", "F2", "F3", "F4", "F5",
-//     "F6", "F7", "F8", "F9", "F10", "[Num]", "[Scroll]", "[Home(7)]", "[Up(8)]", "[PgUp(9)]", "-",
-//     "[Left(4)]", "[Center(5)]", "[Right(6)]", "+", "[End(1)]", "[Down(2)]", "[PgDn(3)]", "[Ins]", "[Del]"};
-
 static char *ascii_map[] = {
-    "\\0", "\x027", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "\b",   
-    "[TAB]", "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]", "[ENTER]", "[CTRL]", 
-    "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "\"", "`",  "gavno", "\\", "z", "x", "c", "v", "b",
-    "n", "m", ",", ".", "/", "gavno", "*", "[ALT]", "[SPACE]", "[CAPS]", "[F1]", "[F2]", "[F3]", "[F4]", "[F5]",
-    "[F6]", "[F7]", "[F8]", "[F9]", "[F10]", "[NUMLOCK]", "[SCROLL LOCK]", "[HOME]",
-    "Up Arrow", "Page Up", "-", "Left Arrow", "0,", "Right Arrow", "+", "79 - End key", "Down Arrow",
-    "Page Down", "Insert Key", "Delete Key", "0,", "0,", "0,", "F11 Key", "F12 Key",
-    "All other keys are undefined",
-};
+    "[ESC]", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "bs", "[Tab]", "Q",
+    "W", "E", "R", "T", "Y", "U", "I", "O", "P", "[", "]", "[Enter]", "[CTRL]", "A", "S", "D",
+    "F", "G", "H", "J", "K", "L", ";", "\'", "`", "[LShift]", "\\", "Z", "X", "C", "V", "B", "N", "M",
+    ",", ".", "/", "[RShift]", "[PrtSc]", "[Alt]", " ", "[Caps]", "F1", "F2", "F3", "F4", "F5",
+    "F6", "F7", "F8", "F9", "F10", "[Num]", "[Scroll]", "[Home(7)]", "[Up(8)]", "[PgUp(9)]", "-",
+    "[Left(4)]", "[Center(5)]", "[Right(6)]", "+", "[End(1)]", "[Down(2)]", "[PgDn(3)]", "[Ins]", "[Del]"};
 
 static struct workqueue_struct *queue;
 static struct work_struct *work1, *work2;
@@ -78,27 +68,23 @@ int define_irq = 1;
 
 static void work1_handler(struct work_struct *work)
 {
-    int scancode;
+    char scancode;
     char *key;
-    char *status;
 
     scancode = inb(KBD_DATA_REG);
-    key = ascii_map[scancode & KBD_DATA_REG];
-    status = scancode & KBD_STATUS_MASK ? "Released" : "Pressed";
-    // int len;
-    printk("Key is %s, status is %s\n", key, status);
-    // len = snprintf(tmp + cur_pos, MAX_BUF_SIZE - cur_pos - 1, "State: %ld, Count: %d, Data: %s\n",
-    //                queue.state, atomic_read(&queue.count), (char *)queue.data);
-    // cur_pos += len;
-    // tmp[cur_pos] = '\0';
+    key = ascii_map[(scancode & KBD_SCANCODE_MASK) - 1];
+    if ((scancode & KBD_STATUS_MASK) == 0)
+    {
+        printk("%s is pressed\n", key);
+    }
 }
 
 static void work2_handler(struct work_struct *work)
 {
     // int len;
-    printk("Hello from work2\n");
-    // len = snprintf(tmp + cur_pos, MAX_BUF_SIZE - cur_pos - 1, "State: %ld, Count: %d, Data: %s\n",
-    //                queue.state, atomic_read(&queue.count), (char *)queue.data);
+    printk("Work2 data: %ld, current cpu: %u\n", atomic_long_read(&work->data), smp_processor_id());
+    // len = snprintf(tmp + cur_pos, MAX_BUF_SIZE - cur_pos - 1, "!WQ! nr_drainers: %d, saved_max_active: %d\n",
+    //                queue->nr_drainers, queue->saved_max_active);
     // cur_pos += len;
     // tmp[cur_pos] = '\0';
 }
@@ -108,6 +94,7 @@ static irqreturn_t irq_handler(int irq, void *dev)
     if (irq == define_irq)
     {
         int ret;
+        unsigned int cpu;
 
         if (queue)
         {
@@ -117,9 +104,12 @@ static irqreturn_t irq_handler(int irq, void *dev)
                 INIT_WORK(work1, work1_handler);
                 ret = queue_work(queue, (struct work_struct *)work1);
             }
+
             work2 = kmalloc(sizeof(struct work_struct), GFP_KERNEL);
             if (work2)
             {
+                cpu = smp_processor_id();
+                atomic_long_set(&work2->data, (long)cpu);
                 INIT_WORK(work2, work2_handler);
                 ret = queue_work(queue, (struct work_struct *)work2);
             }

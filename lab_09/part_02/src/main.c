@@ -199,5 +199,6 @@ void cleanup_module(void)
 {
     freemem();
     flush_workqueue(queue);
+    destroy_workqueue(queue);
     free_irq(define_irq, (void *)(irq_handler));
 }

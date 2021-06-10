@@ -64,14 +64,7 @@ static irqreturn_t irq_handler(int irq, void *dev, struct pt_regs *regs)
 {
     if (irq == define_irq)
     {
-        int len = snprintf(tmp + cur_pos, MAX_BUF_SIZE - cur_pos - 1, "State: %ld, Count: %d, Data: %s\n",
-                           tasklet.state, atomic_read(&tasklet.count), (char *)tasklet.data);
-        cur_pos += len;
         tasklet_schedule(&tasklet);
-        len = snprintf(tmp + cur_pos, MAX_BUF_SIZE - cur_pos - 1, "State: %ld, Count: %d, Data: %s\n",
-                       tasklet.state, atomic_read(&tasklet.count), (char *)tasklet.data);
-        cur_pos += len;
-        tmp[cur_pos] = '\0';
 
         return IRQ_HANDLED;
     }

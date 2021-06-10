@@ -7,6 +7,7 @@
 #include <linux/workqueue.h>
 #include <linux/slab.h>
 #include <linux/smp.h>
+#include <linux/delay.h>
 #include <asm/io.h>
 
 #define FILENAME "queue_file"
@@ -112,17 +113,17 @@ static struct proc_ops pops = {
 };
 
 int define_irq = 1;
+char scancode;
+int status;
+char *key;
 
 static void work1_handler(struct work_struct *work)
 {
-    char scancode;
-    char *key;
-
-    scancode = inb(KBD_DATA_REG);
-    key = ascii_map[(scancode & KBD_SCANCODE_MASK) - 1];
-    if ((scancode & KBD_STATUS_MASK) == 0)
+    if (!status)
     {
-        printk("%s is pressed\n", key);
+        printk("Work1 data: %s is pressed\n", key);
+        msleep(10);
+        printk("Delayed output");
     }
 }
 
@@ -143,6 +144,13 @@ static irqreturn_t irq_handler(int irq, void *dev)
     {
         int ret;
         unsigned int cpu;
+
+        scancode = inb(KBD_DATA_REG);
+        status = scancode & KBD_STATUS_MASK;
+        if (!(status))
+        {
+            key = ascii_map[(scancode & KBD_SCANCODE_MASK) - 1];
+        }
 
         if (queue)
         {
